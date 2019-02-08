@@ -17,15 +17,22 @@ docker run -itd --name sak --rm \
     --pid=container:${CONTAINER_ID_OR_NAME} \
     --cap-add sys_admin \
     --cap-add sys_ptrace \
-    mhoyer/swiss-army-knife
+    pixelplastic/swiss-army-knife
 ```
 
 Open the debugging bash inside the swiss army knife sidecar:
 ```bash
-docker exec sak bash
+docker exec -it sak bash
 ```
 
-Now run all the fancy tools to debug process with (probably) `PID=1`.
+Now run all the fancy tools to debug process with (probably) `PID=1`. E.g.:
+```bash
+ps aux
+cat /proc/1/status
+gdb /usr/bin/python3 -p 1
+...
+```
+
 
 Shut down the sidecar container:
 ```bash
