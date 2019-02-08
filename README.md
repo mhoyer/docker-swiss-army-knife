@@ -5,24 +5,30 @@ This repo contains a docker image for debugging running containers with sidecar 
 ## Running
 
 Find the container `id` or `name` to debug:
-```
+```bash
 docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Image}}"
-export CONTAINER_ID_OR_NAME_TO_DEBUG=xxx
+CONTAINER_ID_OR_NAME=  # id or name to debug
 ```
 
 Start the swiss army knife:
-```
-docker run -n sak --rm --net=container:${CONTAINER_ID_OR_NAME_TO_DEBUG} --pid=container:${CONTAINER_ID_OR_NAME_TO_DEBUG} -itd mhoyer/swiss-army-knife
+```bash
+docker run -itd --name sak --rm \
+    --net=container:${CONTAINER_ID_OR_NAME} \
+    --pid=container:${CONTAINER_ID_OR_NAME} \
+    --cap-add sys_admin \
+    --cap-add sys_ptrace \
+    mhoyer/swiss-army-knife
 ```
 
 Open the debugging bash inside the swiss army knife sidecar:
-```
+```bash
 docker exec sak bash
-# run all the fancy tools to debug process with PID=1
 ```
 
+Now run all the fancy tools to debug process with (probably) `PID=1`.
+
 Shut down the sidecar container:
-```
+```bash
 docker stop sak
 ```
 
